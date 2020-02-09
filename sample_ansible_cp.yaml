@@ -1,0 +1,5 @@
+- hosts: webservers
+  become: true 
+  tasks:
+  - name: Copy content to file
+    copy: content="Hello World DevOps \n" dest=/home/ansible/mohanraj.txt
