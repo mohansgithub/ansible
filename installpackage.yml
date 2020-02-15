@@ -1,0 +1,19 @@
+-
+
+  name: Install the packages
+
+  hosts: installs
+  vars_files:
+     - variables.yml
+
+  tasks:
+    -
+
+      name: Install the package
+
+      file:
+        path: /tmp/{{ item }}
+        state: touch
+      with_items: "{{ Packages1 }}"
+
+

@@ -1,0 +1,21 @@
+---
+- hosts: all
+  vars:
+  - warName: App1.war
+  - warRemotePath: /root/vagrant-ansible
+  connection: local
+  gather_facts: no
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Nginx setup
+      apt: pkg=nginx state=installed update_cache=true
+
+    - name: Unzip WAR file
+      unarchive: src={{ warRemotePath }}/{{ warName }} dest=/usr/share/nginx/html/ copy=no mode=0755 owner=root
+      notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted
+

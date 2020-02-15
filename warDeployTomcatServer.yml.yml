@@ -1,0 +1,27 @@
+---
+- hosts: all
+  vars:
+  - warName: ecomm.war
+  - warRemotePath: /root/vagrant-ansible
+  connection: local
+  gather_facts: no
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Install Tomcat7
+      apt: pkg=tomcat7 state=present update_cache=true
+
+    - name: Copy war file
+      copy: src={{ warRemotePath }}/{{ warName }} dest=/var/lib/tomcat7/webapps/
+      notify: restart tomcat7
+
+#    - name: Start tomcat service
+#      shell: /etc/init.d/tomcat start
+
+#    - name: wait for tomcat to start
+#      wait_for: port=8080 timeout=60
+
+  handlers:  
+    - name: restart tomcat7
+      service: name=tomcat7 state=restarted
+

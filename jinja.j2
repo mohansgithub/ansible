@@ -1,0 +1,77 @@
+#jinja2: trim_blocks:False
+{% for i in range(number) %}
+-
+
+  name: Execute a  command on localhost
+
+  hosts: linux
+  vars_files:
+     - variables.yml
+
+  tasks:
+    - shell: rm -rf /root/Ansible/vagrantdir/Vagrantfile
+    -
+
+      name: Create a Directory 
+
+      file: 
+        path: /root/Ansible/vagrantdir
+        state: directory
+   
+    -
+
+      name: Initialize the Image
+
+      command: chdir=/root/Ansible/vagrantdir vagrant init hashicorp/precise32
+   
+    - name: Empty the vagrant file
+      copy:
+        src: /dev/null
+        dest: /root/Ansible/vagrantdir/Vagrantfile
+   
+    
+    - name: Replace the content of the file 
+      blockinfile:
+        path: /root/Ansible/vagrantdir/Vagrantfile
+        block: |
+         BOX_IMAGE = {% raw %}"{{{% endraw %} IMAGE{{ i+1 }} {% raw %}}}"{% endraw %}
+         Vagrant.configure("2") do |config|
+         config.vm.define {% raw %}"{{{% endraw %} HOSTNAME{{i+1}} {% raw %}}}"{% endraw %}  do |subconfig|
+         subconfig.vm.box = BOX_IMAGE
+         subconfig.vm.hostname = {% raw %}"{{{% endraw %} HOSTNAME{{i+1}} {% raw %}}}"{% endraw %} 
+         subconfig.vm.network :private_network, ip: {% raw %}"{{{% endraw %} IP{{i+1}} {% raw %}}}"{% endraw %}
+         end
+         end
+
+    -
+
+      name: Make the VM up
+
+      command: chdir=/root/Ansible/vagrantdir vagrant up
+
+-
+
+  name: Execute a  command to add IP in host file
+
+  hosts: linux
+  become: yes
+  vars_files:
+     - variables.yml
+
+  tasks:
+    -
+      name: Wait for SSH to come up
+      wait_for:
+          host: {% raw %}"{{{% endraw %} IP{{i+1}} {% raw %}}}"{% endraw %}
+          port: 22
+          state: started
+
+    -
+      name: Add IP in host file
+      blockinfile:
+        path: /etc/ansible/hosts
+        block: |
+         {% raw %}{{{% endraw %} HOSTNAME{{i+1}} {% raw %}}}{% endraw %} ansible_host={% raw %}{{{% endraw %} IP{{i+1}} {% raw %}}}{% endraw %} ansible_connection=ssh ansible_user=vagrant ansible_ssh_pass=vagrant
+
+{% endfor %}
+

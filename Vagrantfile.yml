@@ -1,0 +1,34 @@
+Vagrant.configure('2') do |config|
+   system "vagrant plugin install vagrant-env" unless Vagrant.has_plugin? "vagrant-env"
+
+   if !File.file?('.env')
+      print "FATAL:Missing environment configuration file(.env).\n"
+      exit
+   end
+
+   config.env.enable # Enable vagrant-env(.env)
+   config.vm.hostname = ENV['HOST_NAME']
+   config.vm.network "private_network", type: ENV['PRIVATE_NETWORK_TYPE'],
+                                        #name => 'vboxnet0',
+                                        #adapter => 2,
+                                        ip: ENV['PRIVATE_NETWORK_IP']
+   config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+
+#  config.ssh.dsa_authentication = "false"
+#  config.ssh.insert_key = "false"  
+   config.vm.provider :virtualbox do |vb|
+     vb.customize ["modifyvm", :id, 
+                  "--ioapic", ENV['IOAPIC'],
+                  "--memory", ENV['MEMORY'],
+                  "--cpuexecutioncap", ENV['CPUEXECUTIONCAP'],
+                  "--cpus", ENV['CPUS']]
+   end
+
+  config.vm.box = ENV['BOX_NAME']
+
+  config.vm.box_url = ENV['BOX_URL']
+
+#  config.vm.provision :ansible do |ansible|
+#    ansible.playbook = "warDeployNginxServer.yml"
+#  end
+end

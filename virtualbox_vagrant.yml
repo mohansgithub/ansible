@@ -1,0 +1,38 @@
+-
+
+  name: Install vagrant and virtualbox for given hosts
+
+  hosts: linux
+  gather_facts: True
+
+  tasks:
+
+    -
+
+      name: Download Vagrant
+      get_url:
+         url: https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.rpm
+         dest: /root
+         mode: '0777'
+    -
+
+      name: Install Vagrant
+      yum:
+        name: /root/vagrant_2.2.5_x86_64.rpm
+        state: present 
+    -
+      name: Download virtualbox
+      get_url:
+        url: https://download.virtualbox.org/virtualbox/6.0.10/VirtualBox-6.0-6.0.10_132072_el7-1.x86_64.rpm
+        dest: /root
+        mode: '0777'
+
+    -
+      name: Install virtualbox
+      yum:
+        name: /root/VirtualBox-6.0-6.0.10_132072_el7-1.x86_64.rpm
+        state: present
+         
+         
+
+   

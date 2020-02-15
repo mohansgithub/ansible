@@ -1,0 +1,21 @@
+-
+
+  name: Execute a  command on localhost
+
+  hosts: localhost
+  become: yes
+  vars_files:
+     - variables.yml
+
+  tasks:
+    -
+
+      name: Create a Playbook
+      template:
+        src: /root/Ansible/jinja.j2
+        dest: /root/Ansible/createvms.yml
+        mode: 0777
+
+      
+
+

@@ -1,0 +1,26 @@
+-
+
+  name: Install vagrant and virtualbox for given hosts
+
+  hosts: linux
+  gather_facts: True
+  vars:
+    packages:
+        - virtuabox
+        - vagrant
+
+
+  tasks:
+
+        - name: Install a list of packages
+          apt:
+           name: "{{ packages }}"
+
+#        - name: Start service httpd, if not started
+#          service:
+#              name: "{{ packages }}"
+#              state: started
+ 
+         
+
+   

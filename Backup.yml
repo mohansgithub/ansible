@@ -1,0 +1,35 @@
+---
+# Install backups (each machine will have it's own backups script)
+
+- hosts: all
+  tasks:
+    - name: Install library used to calculate disc space
+      sudo: true
+      apt: pkg={{ item }} state=latest update_cache=true
+      ignore_errors: True
+      with_items:
+        - bc
+
+    - name: Install backups software
+      sudo: true
+      copy: src=private/backups/requisite_software dest=/usr/sbin/requisite_software
+
+    - name: Make backup script executable
+      sudo: true
+      shell: chmod +x /usr/sbin/requisite_software
+
+    - name: Install backups software credentials
+      sudo: true
+      copy: src=private/backups/.requisite_software_tokens dest=/root/.requisite_software_tokens
+
+    - name: Install backups scripts
+      sudo: true
+      copy: src=private/backups/{{ ansible_fqdn }} dest=/usr/sbin/auto-backups
+
+    - name: Make backup script executable
+      sudo: true
+      shell: chmod +x /usr/sbin/auto-backups
+
+    - name: Install backups cron entry
+      sudo: true
+      cron: name="Automatic backups to Dropbox" minute="0" hour="6" job="bash /usr/sbin/auto-backups | logger"

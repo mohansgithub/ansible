@@ -1,0 +1,75 @@
+
+-
+
+  name: Execute a  command on localhost
+
+  hosts: linux
+  vars_files:
+     - variables.yml
+
+  tasks:
+    - shell: rm -rf /root/Ansible/vagrantdir/Vagrantfile
+    -
+
+      name: Create a Directory 
+
+      file: 
+        path: /root/Ansible/vagrantdir
+        state: directory
+   
+    -
+
+      name: Initialize the Image
+
+      command: chdir=/root/Ansible/vagrantdir vagrant init hashicorp/precise32
+   
+    - name: Empty the vagrant file
+      copy:
+        src: /dev/null
+        dest: /root/Ansible/vagrantdir/Vagrantfile
+   
+    
+    - name: Replace the content of the file 
+      blockinfile:
+        path: /root/Ansible/vagrantdir/Vagrantfile
+        block: |
+         BOX_IMAGE = "{{ IMAGE1 }}"
+         Vagrant.configure("2") do |config|
+         config.vm.define "{{ HOSTNAME1 }}"  do |subconfig|
+         subconfig.vm.box = BOX_IMAGE
+         subconfig.vm.hostname = "{{ HOSTNAME1 }}" 
+         subconfig.vm.network :private_network, ip: "{{ IP1 }}"
+         end
+         end
+
+    -
+
+      name: Make the VM up
+
+      command: chdir=/root/Ansible/vagrantdir vagrant up
+
+-
+
+  name: Execute a  command to add IP in host file
+
+  hosts: linux
+  become: yes
+  vars_files:
+     - variables.yml
+
+  tasks:
+    -
+      name: Wait for SSH to come up
+      wait_for:
+          host: "{{ IP1 }}"
+          port: 22
+          state: started
+
+    -
+      name: Add IP in host file
+      blockinfile:
+        path: /etc/ansible/hosts
+        block: |
+         {{ HOSTNAME1 }} ansible_host={{ IP1 }} ansible_connection=ssh ansible_user=vagrant ansible_ssh_pass=vagrant
+
+

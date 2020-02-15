@@ -1,0 +1,49 @@
+Backup :
+	backup source_path
+	backup destination_path
+Environment resources
+	OS
+	cpu
+	ram
+	processor speed
+	home directory
+	default-shell
+	host mame
+	time-zone:
+Dependency packages
+	Tomat
+	Python
+	JAVA
+	JDK : version
+Network provisioning
+	vlan
+		access port:
+		trunk  port:
+	Firewarll 
+	proxy
+	update locale
+	subnet
+	vlsm
+    CIDR
+	dhcp
+	dns
+Security
+     SSL:		
+     authentication
+		SHA
+		HMAC
+	Encryption
+	    DES
+		AES
+Cluster configruation:
+	 Cluster Resource group: 
+     Cluster Type : active - Avtive / Active - passive
+	 virtual / Scan ip :
+	 Type : stan by / load balancing
+Data base configuration
+	User:
+	password:
+	Schema:
+	Indexing : yes / NO
+	
+	 

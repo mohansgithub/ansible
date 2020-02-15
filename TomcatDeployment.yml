@@ -1,0 +1,12 @@
+---
+- hosts: all
+  vars:
+  - warName: ecomm.war
+  - warRemotePath: /root/vagrant-ansible
+  connection: local
+  gather_facts: no
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Install Tomcat7
+      apt: pkg=tomcat7 state=present update_cache=true

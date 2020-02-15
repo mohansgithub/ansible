@@ -1,0 +1,42 @@
+---
+- hosts: localhost
+  connection: local
+  user: root
+  gather_facts: false
+  serial: 1
+
+  tasks:
+  - vsphere_guest:
+      vcenter_hostname: xxxxxxxx
+      username: root
+      password: xxxxxxx
+      guest: testvm1
+      state: powered_on
+      validate_certs: no
+      vm_extra_config:
+        vcpu.hotadd: yes
+        mem.hotadd: yes
+        notes: this is a test vm
+      vm_disk:
+        disk1:
+          size_gb: 1
+          type: thin
+          datastore: datastore1
+      vm_nic:
+        nic1:
+          type: vmxnet3
+          network: vm
+          network_type: standard
+      vm_hardware:
+        memory_mb: 1024
+        num_cpus: 1
+        osid: centos64Guest
+        scsi: paravirtual
+      from_template: yes
+      template_src: ovf_ubunutu_vmtools/Ansible_client_1.ovf
+      vm_cdrom:
+        type: "iso"
+        iso_path: "Images/ubuntu-16.04.2-desktop-amd64.iso"
+      esxi:
+        datacenter:  ha-datacenter
+        hostname: SSN.TechMahindra.com

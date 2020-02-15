@@ -1,0 +1,30 @@
+-
+
+  name: Block IP and forward the requests to specific ports 
+
+  hosts: linux
+  gather_facts: True
+  tasks:
+      - name: Block specific IP
+        iptables:
+          chain: INPUT
+          source: 13.52.10.12
+          jump: DROP
+        become: yes
+
+      - name: Forward port 80 to 8600
+        iptables:
+           table: nat
+           chain: PREROUTING
+           in_interface: eth0
+           protocol: tcp
+           match: tcp
+           destination_port: 80
+           jump: REDIRECT
+           to_ports: 8600
+           comment: Redirect web traffic to port 8600
+        become: yes
+ 
+             
+
+   

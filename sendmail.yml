@@ -1,0 +1,29 @@
+-
+
+  name: Email using gmail smtp relay
+
+  hosts: linux
+  gather_facts: True
+  tasks:
+
+       - name: Send e-mail to a bunch of users, attaching files,using gmail smtp relay
+         mail:
+           host: smtp.gmail.com
+           port: 587
+           username: username@gmail.com
+           password: mysecret
+           subject: Greetings of the day
+           body: Hello, Good morning
+           from: ah00633093@techmahindra.com
+           to:
+             - sv00547784@techmahindra.com
+             - sk00633093@techmahindra.com
+           cc: vh633393@techmahindra.com
+           attach:
+             - /etc/group
+             - /tmp/avatar2.png
+           delegate_to: localhost
+ 
+         
+
+   
